@@ -91,6 +91,18 @@ if __name__ == "__main__":
     scores = [{"method": r.method, "top10": r["fires caught in top 10%"], "top5": r["fires caught in top 5%"],
                "auc": r["ROC-AUC"], "ap": r["average precision"], "new_top10": SN.loc[r.method, "fires caught in top 10%"]}
               for _, r in S.iterrows()]
+    X = json.load(open(RES / "extra_checks.json"))
+    RN = "Recent fires + usual for month (fitted on 2021-22)"
+    scores.insert(1, {"method": RN, "top10": X["all_fires_top10"][RN], "top5": X["all_fires_top5"][RN], "auc": X["rule_auc"],
+                      "ap": None, "new_top10": X["new_fires_top10"][RN]})
+    for sc in scores:
+        if sc["method"] == "Saqshy, weather only":
+            sc["method"] = "Saqshy, weather + location only"
+    checks = {"rule": X["all_fires_top10"][RN], "ci_rule": X["bootstrap_95ci_points"]["Saqshy minus fair rule"],
+              "ci_recent": X["bootstrap_95ci_points"]["Saqshy minus recent fires"],
+              "days": X["days_with_5plus_fire_squares"], "beats_recent": X["share_of_those_days_saqshy_beats_recent"],
+              "fwi_fuel": X["all_fires_top10"]["Canadian FWI, only squares that burned in the last year"],
+              "season": [r for r in X["by_season"] if r["season"].startswith("June")]}
     curve = pd.read_csv(RES / "tradeoff_curve.csv").to_dict("records")
     by = pd.read_csv(RES / "scores_by_year.csv")
     by_year = []
@@ -110,11 +122,13 @@ if __name__ == "__main__":
     big_all = p[p.fires_tomorrow_count >= 50]
     fails = [
         f"<b>New fires are much harder.</b> For squares with no fire in the three days before, only {me['new_top10']:.0%} fall in the red 10% "
-        f"(all fires: {me['top10']:.0%}). A lightning strike or a match leaves no trace in yesterday's data.",
+        f"(all fires: {me['top10']:.0%}), about the same as the plain \"usual for this month\" map. A lightning strike or a match leaves no trace in yesterday's data.",
         f"<b>Some big fires come from nowhere.</b> Of {len(big_all)} square-days with 50+ detections, {len(big)} were outside the red zone the evening before"
         + (f", e.g. {big.iloc[0].date + pd.Timedelta(days=1):%d %b %Y} near {big.iloc[0].lat:.1f}°N {big.iloc[0].lon:.1f}°E ({int(big.iloc[0].fires_tomorrow_count)} detections; it was ranked in the top {big.iloc[0].risk_rank:.0%})." if len(big) else "."),
         "<b>Satellites miss small and cloudy fires</b>, and some detections are farmers burning stubble, not wildfires. Saqshy predicts what the satellite will see.",
         f"<b>Uneven by region:</b> it works best where fires repeat every year; see the region table.",
+        "<b>Timing.</b> Satellite dates are in UTC, so a live version would run before dawn (~05:00 local), after the night satellite pass, and would need a weather forecast because NASA POWER arrives a few days late.",
+        "<b>Not tested with rangers yet.</b> The users and the alert are my design; no forestry office has used it.",
     ]
 
     region_of = []
@@ -131,7 +145,7 @@ if __name__ == "__main__":
 
     out = {"cells": [[float(a), float(b)] for a, b in zip(cells.lat, cells.lon)], "outline": geo, "days": days,
            "abai": abai, "scores": scores, "curve": curve, "by_year": by_year, "regions_score": regions_score,
-           "importance": importance, "fails": fails, "n_test": int(len(p)), "hero_day": SHOW, "start_day": SHOW, "show": show,
+           "importance": importance, "fails": fails, "checks": checks, "n_test": int(len(p)), "hero_day": SHOW, "start_day": SHOW, "show": show,
            "cell_region": region_of, "regions": [{"en": r[3], "kk": r[4], "ru": r[5]} for r in REGIONS]}
     (ROOT / "docs").mkdir(exist_ok=True)
     json.dump(out, open(ROOT / "docs" / "data.json", "w"), separators=(",", ":"))

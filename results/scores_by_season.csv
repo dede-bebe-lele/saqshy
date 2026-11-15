@@ -1,0 +1,11 @@
+season,method,fire square-days,caught in top 10%,new fires caught in top 10%
+June-September (wildfire season),Saqshy,7311,0.7001778142524963,0.463554667998003
+June-September (wildfire season),Recent fires + usual for month (fitted on 2021-22),7311,0.6666666666666666,0.40089865202196706
+June-September (wildfire season),Recent fires (last 7 days),7311,0.6101764464505539,0.29355966050923615
+June-September (wildfire season),"Canadian FWI, only squares that burned in the last year",7311,0.1955956777458624,0.18472291562656015
+June-September (wildfire season),Canadian FWI,7311,0.08384625906168787,0.08562156764852721
+March-May + October-November,Saqshy,15948,0.6821545021319287,0.40273136713642305
+March-May + October-November,Recent fires + usual for month (fitted on 2021-22),15948,0.6558189114622524,0.3425831759407235
+March-May + October-November,Recent fires (last 7 days),15948,0.6216453473789817,0.2769141362777858
+March-May + October-November,"Canadian FWI, only squares that burned in the last year",15948,0.2593428643090043,0.18974284468981548
+March-May + October-November,Canadian FWI,15948,0.1260973162779032,0.08847886096178992

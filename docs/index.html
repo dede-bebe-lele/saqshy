@@ -219,7 +219,7 @@ footer p{max-width:900px}
 <section id="replay"><div class="wrap">
   <div class="kicker">01 · try it</div>
   <h2>Replay any evening of the <em>2023–2025</em> fire seasons</h2>
-  <p class="sub">It opens on <b>29 April 2025</b>: fires broke out in the northern steppe the next day, in <b id="sN"></b> squares. <b id="sS"></b> were inside Saqshy's red zone; the Canadian FWI's red zone caught <b id="sF"></b>, because it pointed at the southern deserts, which are hot and dry but have little to burn. Pick any other date. The colours are the risk Saqshy gave each square <b>that evening</b>, for the next day. The green dots are where NASA satellites really saw fires the next day. The model never saw these years while it was being trained.</p>
+  <p class="sub">It opens on <b>29 April 2025</b>: the next day satellites saw fires in <b id="sN"></b> squares, mostly in the northern steppe and farmland (spring is also stubble-burning season). <b id="sS"></b> were inside Saqshy's red zone; the Canadian FWI's red zone caught <b id="sF"></b>, because it pointed at the southern deserts, which are hot and dry but have little to burn. Pick any other date. The colours are the risk Saqshy gave each square <b>that evening</b>, for the next day. The green dots are where NASA satellites really saw fires the next day. The model never saw these years while it was being trained.</p>
   <div class="replay">
     <div class="hud">
       <div class="ctrl">
@@ -253,7 +253,7 @@ footer p{max-width:900px}
 <section id="abai"><div class="wrap">
   <div class="kicker">02 · the hardest case</div>
   <h2>The Abai fire, <em>8 June 2023</em></h2>
-  <p class="sub">Lightning started a fire in the Semey Ormany forest in Abai region. It burned about 60,000 hectares and 15 people died. Here is what Saqshy, trained only on 2012–2022, said, with no changes after the fact.</p>
+  <p class="sub">Lightning started a fire in the Semey Ormany forest in Abai region. It burned about 60,000 hectares and 15 people died. Here is what Saqshy, trained only on 2012–2022, said.</p>
   <div class="story">
     <div class="hud"><div class="rec"><span><span class="dot"></span>REC · 07.06.2023 EVENING</span><span>ring = fire start</span></div><canvas id="abai1" width="900" height="560"></canvas><p class="cap">Evening of 7 June: risk map. Ring = where the fire started on 8 June</p></div>
     <div class="hud v"><div class="rec"><span><span class="dot"></span>REC · 08.06.2023 EVENING</span><span>● = fires on 9 June</span></div><canvas id="abai2" width="900" height="560"></canvas><p class="cap">Evening of 8 June: risk map, and the fires seen on 9 June</p></div>
@@ -268,6 +268,10 @@ footer p{max-width:900px}
   <div class="hud" style="margin-top:28px">
     <div class="rec"><span>&gt; cat results.log</span><span>share of tomorrow's fires inside the riskiest 10%</span></div>
     <div class="bars" id="bars"></div>
+  </div>
+  <div class="hud v" style="margin-top:30px">
+    <div class="rec"><span>&gt; ./extra_checks.py</span><span>stress tests a sceptical judge would ask for</span></div>
+    <ul class="clean" id="checks"></ul>
   </div>
   <div class="grid2" style="margin-top:30px">
     <div class="hud"><h3>Fires caught vs. share of the map watched</h3><div class="chartbox"><canvas id="curve"></canvas></div><p class="note">Higher is better. Each line ranks the squares differently; the x-axis is how much of the country you watch.</p></div>
@@ -407,7 +411,7 @@ fetch('data.json').then(r=>r.json()).then(D=>{
   show(D.start_day);
 
   /* results: terminal bars */
-  const order=[['Saqshy',LIME],['Recent fires (last 7 days)','#e6e8ef'],['Usual for this month',VIO],['Saqshy, weather only','#7fd420'],['Nesterov index (used in Russia)',PINK],['Canadian FWI (used in Europe)',PINK]];
+  const order=[['Saqshy',LIME],['Recent fires + usual for month (fitted on 2021-22)','#c9cdd8'],['Recent fires (last 7 days)','#e6e8ef'],['Usual for this month',VIO],['Saqshy, weather + location only','#7fd420'],['Nesterov index (used in Russia)',PINK],['Canadian FWI (used in Europe)',PINK]];
   bars.innerHTML=order.map(([m,c])=>{const s=S.find(x=>x.method===m);if(!s)return'';
     return `<div class="barrow ${m==='Saqshy'?'me':''}" style="--c:${c}"><span>${m}</span><div class="tr"><div class="fi" data-w="${s.top10*100}"></div></div><span class="v">${pct(s.top10)}</span></div>`;}).join('');
   const bio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('.fi').forEach(f=>f.style.width=f.dataset.w+'%');bio.disconnect();}}),{threshold:.3});bio.observe(bars);
@@ -426,6 +430,13 @@ fetch('data.json').then(r=>r.json()).then(D=>{
   tblReg.innerHTML='<tr><th>Region</th><th>Fires</th><th>Saqshy</th><th>FWI</th><th>Recent</th></tr>'+
     D.regions_score.map(r=>`<tr><td>${r.region}</td><td>${r.fires.toLocaleString('en')}</td><td><b>${pct(r.saqshy)}</b></td><td>${pct(r.fwi)}</td><td>${pct(r.recent)}</td></tr>`).join('');
   fails.innerHTML=D.fails.map(f=>'<li>'+f+'</li>').join('');
+  const C=D.checks,sea=C.season,sv=m=>sea.find(r=>r.method===m)['caught in top 10%'];
+  checks.innerHTML=[
+    `<b>Against the fairest simple rule</b> (recent fires + usual rate for the month, a 4-input logistic regression fitted on 2021–22, not on the test years): it catches ${pct(C.rule)}. Saqshy's lead is <b>+${(me.top10*100-C.rule*100).toFixed(1)} points</b> (95% bootstrap interval over test days: +${C.ci_rule[0]} to +${C.ci_rule[1]}). Small, but real.`,
+    `<b>Day by day:</b> on ${Math.round(C.beats_recent*100)}% of the ${C.days} test days with 5+ fire squares, Saqshy's red zone caught more fires than "where it burned last week".`,
+    `<b>Wildfire season only (June–September)</b>, when few farmers burn stubble: Saqshy ${pct(sv('Saqshy'))}, fair rule ${pct(sv('Recent fires + usual for month (fitted on 2021-22)'))}, recent fires ${pct(sv('Recent fires (last 7 days)'))}, FWI ${pct(sv('Canadian FWI'))}.`,
+    `<b>A fairer FWI:</b> even ranking only squares that burned in the last year (somewhere with fuel), the FWI catches ${pct(C.fwi_fuel)}.`
+  ].map(t=>'<li>'+t+'</li>').join('');
   new Chart(imp,{type:'bar',data:{labels:D.importance.map(i=>i.label),datasets:[{data:D.importance.map(i=>i.v),backgroundColor:D.importance.map((_,i)=>i<5?LIME:VIO),borderRadius:2,barPercentage:.7}]},
     options:{indexAxis:'y',maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#10121a',borderColor:LIME,borderWidth:1}},scales:{x:{title:{display:true,text:'drop in accuracy when the input is shuffled'},grid:{color:'#1a1d27'}},y:{grid:{display:false},ticks:{font:{size:10.5}}}}}});
 });

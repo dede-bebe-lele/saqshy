@@ -1,0 +1,129 @@
+{
+ "rule_inputs": [
+  "fire_days_7d",
+  "clim_month",
+  "near_fire_days_7d",
+  "fires_today_any"
+ ],
+ "rule_coefficients": {
+  "fire_days_7d": 0.358,
+  "clim_month": 5.447,
+  "near_fire_days_7d": 0.043,
+  "fires_today_any": 1.787
+ },
+ "all_fires_top10": {
+  "Saqshy": 0.6878197686916893,
+  "Recent fires + usual for month (fitted on 2021-22)": 0.6592286856700632,
+  "Recent fires (last 7 days)": 0.6180403284749989,
+  "Canadian FWI, only squares that burned in the last year": 0.2393052151855196,
+  "Canadian FWI": 0.11281654413345371
+ },
+ "all_fires_top5": {
+  "Saqshy": 0.5225934047035556,
+  "Recent fires + usual for month (fitted on 2021-22)": 0.4967539447095748,
+  "Recent fires (last 7 days)": 0.4626166215228514,
+  "Canadian FWI, only squares that burned in the last year": 0.1331527580721441,
+  "Canadian FWI": 0.05365664903908165
+ },
+ "rule_auc": 0.916622679642373,
+ "new_fires_top10": {
+  "Saqshy": 0.42510790706217283,
+  "Recent fires + usual for month (fitted on 2021-22)": 0.3640371016622279,
+  "Recent fires (last 7 days)": 0.28303792818440626,
+  "Canadian FWI, only squares that burned in the last year": 0.1878960418771237,
+  "Canadian FWI": 0.0874276793093948
+ },
+ "new_fires_top5": {
+  "Saqshy": 0.2264670768665626,
+  "Recent fires + usual for month (fitted on 2021-22)": 0.18468178896133713,
+  "Recent fires (last 7 days)": 0.14978418587565434,
+  "Canadian FWI, only squares that burned in the last year": 0.09991734778216549,
+  "Canadian FWI": 0.04150978051244375
+ },
+ "bootstrap_95ci_points": {
+  "Saqshy minus recent fires": [
+   6.4,
+   7.6
+  ],
+  "Saqshy minus fair rule": [
+   2.3,
+   3.4
+  ]
+ },
+ "days_with_5plus_fire_squares": 750,
+ "share_of_those_days_saqshy_beats_recent": 0.7693333333333333,
+ "share_of_those_days_saqshy_ties_recent": 0.148,
+ "share_of_those_days_saqshy_beats_rule": 0.5426666666666666,
+ "by_season": [
+  {
+   "season": "June-September (wildfire season)",
+   "method": "Saqshy",
+   "fire square-days": 7311,
+   "caught in top 10%": 0.7001778142524963,
+   "new fires caught in top 10%": 0.463554667998003
+  },
+  {
+   "season": "June-September (wildfire season)",
+   "method": "Recent fires + usual for month (fitted on 2021-22)",
+   "fire square-days": 7311,
+   "caught in top 10%": 0.6666666666666666,
+   "new fires caught in top 10%": 0.40089865202196706
+  },
+  {
+   "season": "June-September (wildfire season)",
+   "method": "Recent fires (last 7 days)",
+   "fire square-days": 7311,
+   "caught in top 10%": 0.6101764464505539,
+   "new fires caught in top 10%": 0.29355966050923615
+  },
+  {
+   "season": "June-September (wildfire season)",
+   "method": "Canadian FWI, only squares that burned in the last year",
+   "fire square-days": 7311,
+   "caught in top 10%": 0.1955956777458624,
+   "new fires caught in top 10%": 0.18472291562656015
+  },
+  {
+   "season": "June-September (wildfire season)",
+   "method": "Canadian FWI",
+   "fire square-days": 7311,
+   "caught in top 10%": 0.08384625906168787,
+   "new fires caught in top 10%": 0.08562156764852721
+  },
+  {
+   "season": "March-May + October-November",
+   "method": "Saqshy",
+   "fire square-days": 15948,
+   "caught in top 10%": 0.6821545021319287,
+   "new fires caught in top 10%": 0.40273136713642305
+  },
+  {
+   "season": "March-May + October-November",
+   "method": "Recent fires + usual for month (fitted on 2021-22)",
+   "fire square-days": 15948,
+   "caught in top 10%": 0.6558189114622524,
+   "new fires caught in top 10%": 0.3425831759407235
+  },
+  {
+   "season": "March-May + October-November",
+   "method": "Recent fires (last 7 days)",
+   "fire square-days": 15948,
+   "caught in top 10%": 0.6216453473789817,
+   "new fires caught in top 10%": 0.2769141362777858
+  },
+  {
+   "season": "March-May + October-November",
+   "method": "Canadian FWI, only squares that burned in the last year",
+   "fire square-days": 15948,
+   "caught in top 10%": 0.2593428643090043,
+   "new fires caught in top 10%": 0.18974284468981548
+  },
+  {
+   "season": "March-May + October-November",
+   "method": "Canadian FWI",
+   "fire square-days": 15948,
+   "caught in top 10%": 0.1260973162779032,
+   "new fires caught in top 10%": 0.08847886096178992
+  }
+ ]
+}

@@ -128,6 +128,27 @@ md(r"""
 """)
 
 md(r"""
+### Stress tests: is the lead real?
+
+Most fires tomorrow are where fires burn today, so persistence is strong. `extra_checks.py` builds the fairest simple rule I could (recent fires + usual rate for the month, a logistic regression fitted on **2021-2022 only**), puts a bootstrap interval on Saqshy's lead, splits out the June-September wildfire season (fewer stubble burns), and gives the FWI a fairer chance (only squares that burned in the last year).
+""")
+
+code(r"""
+!python -W ignore extra_checks.py > /dev/null
+import json
+X = json.load(open("results/extra_checks.json"))
+print("Top-10% catch:", {k: round(v, 3) for k, v in X["all_fires_top10"].items()})
+print("New fires, top-10% catch:", {k: round(v, 3) for k, v in X["new_fires_top10"].items()})
+print("95% bootstrap interval for Saqshy's lead (points):", X["bootstrap_95ci_points"])
+print("Days (5+ fire squares) where Saqshy beats recent fires:", round(X["share_of_those_days_saqshy_beats_recent"], 3))
+pd.read_csv("results/scores_by_season.csv").round(3)
+""")
+
+md(r"""
+**Honest reading:** against the fair rule the lead is small (about +3 points, interval +2.3 to +3.4) but holds in the wildfire season and is bigger on new fires (42% vs 36%).
+""")
+
+md(r"""
 ## 4. A real evening: 29 April 2025 (test season)
 """)
 
